@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentiment Analysis</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f7f9fc;
+        color: #333;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+        color: #4caf50;
+      }
+      .container {
+        width: 60%;
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Form Styles */
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #555;
+      }
+      textarea,
+      select,
+      button {
+        font-size: 16px;
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      textarea {
+        height: 150px;
+        resize: vertical;
+      }
+      select {
+        width: 100%;
+        background-color: #f8f8f8;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+
+      /* Result Styles */
+      .result {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 18px;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f1f1f1;
+      }
+      .result p {
+        margin: 10px 0;
+      }
+      .result .sentiment {
+        font-size: 22px;
+        font-weight: bold;
+      }
+      .result .score {
+        font-size: 18px;
+        color: #555;
+      }
+      .result .gru-result,
+      .result .rnn-result {
+        font-size: 16px;
+        color: #555;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+        .container {
+          width: 90%;
+        }
+        h1 {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sentiment Analysis</h1>
+    <div class="container">
+      <form action="/predict" method="POST">
+        <label for="text">Enter Text:</label>
+        <textarea
+          name="text"
+          id="text"
+          placeholder="Type your text here..."
+        ></textarea>
+
+        <label for="model">Choose Model:</label>
+        <select name="model" id="model">
+          <option value="RNN">RNN Model</option>
+          <option value="GRU">GRU Model</option>
+        </select>
+
+        <button type="submit">Analyze Sentiment</button>
+      </form>
+
+      {% if error %}
+      <p style="color: red">{{ error }}</p>
+      {% endif %} {% if gru_result %}
+      <div class="result">
+        <p><strong>Sentiment Analysis Result</strong></p>
+        <p class="sentiment">Sentiment: {{ sentiment_label }}</p>
+
+        <!-- Check if sentiment_score is valid before rounding -->
+        {% if sentiment_score is not none %}
+        <p class="score">Sentiment Score: {{ sentiment_score }}</p>
+        {% else %}
+        <p class="score">Sentiment Score: N/A</p>
+        {% endif %}
+
+        <p class="gru-result">GRU Model Prediction: {{ gru_result }}</p>
+        <!-- <p class="rnn-result">RNN Model Prediction: {{ rnn_result }}</p> -->
+      </div>
+      {% endif %} {% if explanation_html %}
+      <div class="explanation">
+        <h2>Explanation for the Prediction:</h2>
+        <div>{{ explanation_html | safe }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
